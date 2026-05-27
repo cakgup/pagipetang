@@ -199,8 +199,20 @@ button {
   text-transform: uppercase;
 }
 
+.hero-badge {
+  background: var(--accent);
+  color: var(--primary);
+  padding: 8px 14px;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(255, 202, 26, 0.25);
+}
+
 html[data-theme="dark"] .eyebrow {
   color: var(--accent);
+}
+
+html[data-theme="dark"] .hero-badge {
+  color: var(--primary);
 }
 
 .hero h1,
