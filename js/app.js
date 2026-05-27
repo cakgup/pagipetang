@@ -39,9 +39,12 @@ const readerTitle = document.getElementById('readerTitle');
 const readerDescription = document.getElementById('readerDescription');
 const readerEyebrow = document.getElementById('readerEyebrow');
 const searchInput = document.getElementById('searchInput');
-const fontSizeSelect = document.getElementById('fontSizeSelect');
+const fontDecreaseBtn = document.getElementById('fontDecreaseBtn');
+const fontIncreaseBtn = document.getElementById('fontIncreaseBtn');
 const displayModeSelect = document.getElementById('displayModeSelect');
 const themeToggle = document.getElementById('themeToggle');
+const soundToggleBtn = document.getElementById('soundToggleBtn');
+const backsoundAudio = document.getElementById('backsoundAudio');
 const resetCountersBtn = document.getElementById('resetCountersBtn');
 const printBtn = document.getElementById('printBtn');
 const progressText = document.getElementById('progressText');
@@ -53,11 +56,13 @@ initPreferences();
 window.addEventListener('hashchange', handleRoute);
 document.addEventListener('click', handleCounterClick);
 if (searchInput) searchInput.addEventListener('input', () => renderPrayerList(filterData(searchInput.value)));
-fontSizeSelect.addEventListener('change', () => setFontSize(fontSizeSelect.value));
+fontDecreaseBtn?.addEventListener('click', () => adjustFontSize(-1));
+fontIncreaseBtn?.addEventListener('click', () => adjustFontSize(1));
 displayModeSelect.addEventListener('change', () => setDisplayMode(displayModeSelect.value));
 themeToggle.addEventListener('click', toggleTheme);
-resetCountersBtn.addEventListener('click', resetCountersForCurrentType);
-printBtn.addEventListener('click', () => window.print());
+soundToggleBtn?.addEventListener('click', toggleBacksound);
+resetCountersBtn?.addEventListener('click', resetCountersForCurrentType);
+printBtn?.addEventListener('click', () => window.print());
 
 handleRoute();
 
@@ -70,7 +75,7 @@ function initPreferences() {
   state.displayMode = normalizeDisplayMode(displayMode);
   document.documentElement.dataset.displayMode = state.displayMode;
   themeToggle.setAttribute('aria-pressed', String(document.documentElement.dataset.theme === 'dark'));
-  fontSizeSelect.value = document.documentElement.dataset.fontSize;
+  updateFontButtons();
   displayModeSelect.value = state.displayMode;
 }
 
@@ -207,43 +212,25 @@ function renderPrayerList(items) {
     return;
   }
 
-  const totalText = filteredItems.length === state.currentData.length
-    ? `${filteredItems.length} bacaan ditampilkan.`
-    : `${filteredItems.length} dari ${state.currentData.length} bacaan ditampilkan.`;
-  setStatus(totalText);
+  setStatus('');
   prayerList.innerHTML = filteredItems.map((item) => renderPrayerCard(item)).join('');
   updateProgress();
 }
 
 function renderPrayerCard(item) {
-  const counterKey = getCounterKey(item.id);
-  const count = Number(state.counters[counterKey] || 0);
-  const target = normalizeRepeat(item.jumlah);
-  const isDone = count >= target;
   const displayNumber = Number.isFinite(item.urutan) ? item.urutan : '';
   const showTranslation = state.displayMode === 'arab-translation';
 
   return `
-    <article class="prayer-card ${isDone ? 'prayer-card-done' : ''}" id="${domId(item.id)}">
+    <article class="prayer-card" id="${domId(item.id)}">
       <div class="prayer-meta">
         <div>
           <h2 class="prayer-title">${displayNumber ? `${displayNumber}. ` : ''}${escapeHtml(item.judul)}</h2>
           ${item.sumber ? `<p class="prayer-source">Sumber: ${escapeHtml(item.sumber)}</p>` : ''}
         </div>
-        <span class="repeat-badge" aria-label="Dibaca ${target} kali">${target}x</span>
       </div>
 
       ${renderPrayerContent(item, showTranslation)}
-
-      <div class="counter-row">
-        <span class="counter-status ${isDone ? 'done' : ''}" aria-live="polite">
-          ${Math.min(count, target)} / ${target}${isDone ? ' • selesai' : ''}
-        </span>
-        <div class="counter-actions">
-          <button class="btn btn-accent" type="button" data-counter-add="${escapeAttr(item.id)}" ${isDone ? 'aria-label="Bacaan ini sudah selesai, tambah hitungan tetap dibatasi"' : ''}>Hitung</button>
-          <button class="btn btn-ghost" type="button" data-counter-reset="${escapeAttr(item.id)}">Reset</button>
-        </div>
-      </div>
     </article>
   `;
 }
@@ -389,6 +376,23 @@ function setFontSize(value) {
   const nextValue = ['small', 'medium', 'large'].includes(value) ? value : 'medium';
   document.documentElement.dataset.fontSize = nextValue;
   safeStorageSet(STORAGE_KEYS.fontSize, nextValue);
+  updateFontButtons();
+}
+
+function adjustFontSize(direction) {
+  const sizes = ['small', 'medium', 'large'];
+  const current = document.documentElement.dataset.fontSize || 'medium';
+  const currentIndex = Math.max(0, sizes.indexOf(current));
+  const nextIndex = Math.min(sizes.length - 1, Math.max(0, currentIndex + direction));
+  setFontSize(sizes[nextIndex]);
+}
+
+function updateFontButtons() {
+  const sizes = ['small', 'medium', 'large'];
+  const current = document.documentElement.dataset.fontSize || 'medium';
+  const index = sizes.indexOf(current);
+  if (fontDecreaseBtn) fontDecreaseBtn.disabled = index <= 0;
+  if (fontIncreaseBtn) fontIncreaseBtn.disabled = index >= sizes.length - 1;
 }
 
 function setDisplayMode(value) {
@@ -408,6 +412,25 @@ function toggleTheme() {
   document.documentElement.dataset.theme = nextTheme;
   themeToggle.setAttribute('aria-pressed', String(nextTheme === 'dark'));
   safeStorageSet(STORAGE_KEYS.theme, nextTheme);
+}
+
+async function toggleBacksound() {
+  if (!backsoundAudio || !soundToggleBtn) return;
+
+  try {
+    if (backsoundAudio.paused) {
+      await backsoundAudio.play();
+    } else {
+      backsoundAudio.pause();
+    }
+  } catch (error) {
+    return;
+  }
+
+  const isPlaying = !backsoundAudio.paused;
+  soundToggleBtn.classList.toggle('is-playing', isPlaying);
+  soundToggleBtn.setAttribute('aria-pressed', String(isPlaying));
+  soundToggleBtn.setAttribute('aria-label', isPlaying ? 'Hentikan backsound' : 'Putar backsound');
 }
 
 function normalizeSearchText(value) {

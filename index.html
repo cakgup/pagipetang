@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Aplikasi Al-Ma'tsurat Hasan Al-Banna untuk bacaan Wazifah Sugro." />
+  <meta name="description" content="Di antara fajar yang menyingsing dan senja yang meremang, ada waktu emas untuk menyambung koneksi dengan Sang Pencipta. Mengamalkan dzikir pagi dan petang adalah bukti bahwa kita sadar, pertolongan Allah adalah satu-satunya bekal paling berharga." />
   <meta name="theme-color" content="#1A3A6B" />
   <title>Al-Ma'tsurat Hasan Al-Banna</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -23,6 +23,17 @@
           <small>Hasan Al-Banna</small>
         </span>
       </a>
+      <div class="header-actions" aria-label="Kontrol tampilan dan audio">
+        <button id="fontDecreaseBtn" class="icon-button header-icon-button" type="button" aria-label="Perkecil font">-</button>
+        <button id="fontIncreaseBtn" class="icon-button header-icon-button" type="button" aria-label="Perbesar font">+</button>
+        <button id="themeToggle" class="icon-button header-icon-button theme-icon-button" type="button" aria-pressed="false" aria-label="Aktifkan atau nonaktifkan mode gelap">
+          <span aria-hidden="true">☾</span>
+        </button>
+        <button id="soundToggleBtn" class="icon-button header-icon-button sound-button" type="button" aria-label="Putar backsound" aria-pressed="false">
+          <span aria-hidden="true">♫</span>
+        </button>
+      </div>
+      <audio id="backsoundAudio" src="assets/doa.mp3" preload="auto" loop></audio>
     </div>
   </header>
 
@@ -31,13 +42,21 @@
       <div class="container hero">
         <div class="hero-copy">
           <p class="eyebrow hero-badge">DOA PAGI DAN PETANG</p>
-          <h1 id="homeTitle">WAZIFAH SUGRO</h1>
+          <h1 id="homeTitle" class="sr-only">WAZIFAH SUGRO</h1>
+          <img class="hero-logo" src="assets/logo_doa.png" alt="Wazifah Sugro" />
+          <figure class="motivation-verse">
+            <p class="motivation-arabic" dir="rtl" lang="ar">فَسُبْحَانَ اللَّهِ حِينَ تُمْسُونَ وَحِينَ تُصْبِحُونَ</p>
+            <figcaption>
+              “Maka bertasbihlah kepada Allah di waktu kamu berada di sore hari dan waktu kamu berada di waktu pagi hari” <span>(QS. Ar-Rum:17).</span>
+            </figcaption>
+          </figure>
           <p class="hero-description">
-            Aplikasi Al-Ma'tsurat Hasan Al-Banna untuk bacaan Wazifah Sugro.
+            Di antara fajar yang menyingsing dan senja yang meremang, ada waktu emas untuk menyambung koneksi dengan Sang Pencipta. Mengamalkan dzikir pagi dan petang adalah bukti bahwa kita sadar, pertolongan Allah adalah satu-satunya bekal paling berharga.
           </p>
           <div class="hero-actions" aria-label="Pilihan bacaan utama">
             <a class="btn btn-primary" href="#wazifah">Mulai Wazifah Sugro</a>
           </div>
+          <p class="hero-credit">© <span id="year"></span> Developed by CakGup</p>
         </div>
 
       </div>
@@ -51,23 +70,9 @@
             <h1 id="readerTitle">Wazifah Sugro</h1>
             <p id="readerDescription" class="reader-description"></p>
           </div>
-          <div class="reader-actions">
-            <span id="progressText" class="progress-pill" aria-live="polite">0 / 0 selesai</span>
-            <button class="btn btn-ghost" id="resetCountersBtn" type="button">Reset Counter</button>
-            <button class="btn btn-ghost" id="printBtn" type="button">Cetak</button>
-          </div>
         </div>
 
         <section class="settings-panel" aria-label="Pengaturan tampilan">
-          <div class="field-group">
-            <label for="fontSizeSelect">Ukuran font</label>
-            <select id="fontSizeSelect">
-              <option value="small">Kecil</option>
-              <option value="medium">Sedang</option>
-              <option value="large">Besar</option>
-            </select>
-          </div>
-
           <div class="field-group">
             <label for="displayModeSelect">Tampilan bacaan</label>
             <select id="displayModeSelect">
@@ -76,12 +81,6 @@
             </select>
           </div>
 
-          <div class="field-group toggle-row">
-            <span>Mode gelap</span>
-            <button id="themeToggle" class="toggle" type="button" aria-pressed="false" aria-label="Aktifkan atau nonaktifkan mode gelap">
-              <span class="toggle-thumb"></span>
-            </button>
-          </div>
         </section>
 
         <div id="statusMessage" class="status-message" role="status" aria-live="polite"></div>
@@ -90,13 +89,6 @@
     </section>
 
   </main>
-
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <span>© <span id="year"></span> Al-Ma'tsurat Hasan Al-Banna</span>
-      <span>Dibuat untuk GitHub Pages</span>
-    </div>
-  </footer>
 
   <noscript>
     <div class="noscript">Aplikasi ini membutuhkan JavaScript untuk menampilkan data bacaan.</div>
