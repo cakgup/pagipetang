@@ -111,8 +111,7 @@ button {
 }
 
 .header-inner {
-  --header-page-width: min(1120px, calc(100vw - 32px));
-  --header-content-width: min(880px, calc(100vw - 32px));
+  width: min(880px, calc(100% - 32px));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -156,7 +155,6 @@ button {
   justify-content: flex-end;
   gap: 8px;
   flex: 0 0 auto;
-  margin-right: max(0px, calc(var(--header-page-width) - var(--header-content-width)));
 }
 
 .header-icon-button {
@@ -206,6 +204,10 @@ button {
   padding-bottom: 16px;
 }
 
+.view-reader .container {
+  width: min(880px, calc(100% - 32px));
+}
+
 .hero {
   display: grid;
   grid-template-columns: 1fr;
@@ -227,6 +229,7 @@ button {
 .hero-copy {
   padding: clamp(28px, 6vw, 58px);
   max-width: 880px;
+  margin-inline: auto;
 }
 
 
