@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Aplikasi web statis Al-Ma'tsurat Hasan Al-Banna untuk bacaan pagi, petang, dan Wazifah Sugro." />
+  <meta name="theme-color" content="#1A3A6B" />
+  <title>Al-Ma'tsurat Hasan Al-Banna</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">Lewati ke konten utama</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#home" aria-label="Beranda Al-Ma'tsurat Hasan Al-Banna">
+        <span class="brand-mark" aria-hidden="true">م</span>
+        <span>
+          <strong>Al-Ma'tsurat</strong>
+          <small>Hasan Al-Banna</small>
+        </span>
+      </a>
+
+      <nav class="top-nav" aria-label="Navigasi utama">
+        <a href="#pagi" data-nav-link="pagi">Pagi</a>
+        <a href="#petang" data-nav-link="petang">Petang</a>
+        <a href="#wazifah" data-nav-link="wazifah">Wazifah Sugro</a>
+        <a href="#tentang" data-nav-link="tentang">Tentang</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="mainContent" class="main-content">
+    <section id="homeView" class="view view-home" aria-labelledby="homeTitle">
+      <div class="container hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Tanpa login • GitHub Pages • Ringan</p>
+          <h1 id="homeTitle">Baca Al-Ma'tsurat dengan tampilan yang nyaman.</h1>
+          <p class="hero-description">
+            Aplikasi web statis untuk membantu membaca dzikir dan doa Al-Ma'tsurat Hasan Al-Banna.
+            Data bacaan disimpan dalam file JSON, sehingga mudah diperbarui tanpa database.
+          </p>
+          <div class="hero-actions" aria-label="Pilihan bacaan utama">
+            <a class="btn btn-primary" href="#pagi">Mulai Doa Pagi</a>
+            <a class="btn btn-accent" href="#petang">Mulai Doa Petang</a>
+            <a class="btn btn-ghost" href="#wazifah">Buka Wazifah Sugro</a>
+          </div>
+        </div>
+
+        <aside class="hero-card" aria-label="Ringkasan fitur">
+          <div class="hero-card-icon" aria-hidden="true">☀️</div>
+          <h2>Fitur Utama</h2>
+          <ul class="feature-list">
+            <li>Data bacaan dari JSON yang sudah dirapikan</li>
+            <li>Counter dzikir per bacaan</li>
+            <li>Mode terang dan gelap</li>
+            <li>Pengaturan ukuran font</li>
+            <li>Pencarian judul, arti, sumber, dan teks Arab</li>
+            <li>Progress bacaan tersimpan lokal di browser</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section id="readerView" class="view view-reader" hidden>
+      <div class="container">
+        <div class="reader-head">
+          <div>
+            <p class="eyebrow" id="readerEyebrow">Bacaan</p>
+            <h1 id="readerTitle">Doa Pagi</h1>
+            <p id="readerDescription" class="reader-description"></p>
+          </div>
+          <div class="reader-actions">
+            <span id="progressText" class="progress-pill" aria-live="polite">0 / 0 selesai</span>
+            <button class="btn btn-ghost" id="resetCountersBtn" type="button">Reset Counter</button>
+            <button class="btn btn-ghost" id="printBtn" type="button">Cetak</button>
+          </div>
+        </div>
+
+        <section class="settings-panel" aria-label="Pengaturan tampilan">
+          <div class="field-group search-group">
+            <label for="searchInput">Cari bacaan</label>
+            <input id="searchInput" type="search" placeholder="Contoh: kursi, ikhlas, Allah, istighfar" autocomplete="off" />
+          </div>
+
+          <div class="field-group">
+            <label for="fontSizeSelect">Ukuran font</label>
+            <select id="fontSizeSelect">
+              <option value="small">Kecil</option>
+              <option value="medium">Sedang</option>
+              <option value="large">Besar</option>
+            </select>
+          </div>
+
+          <div class="field-group toggle-row">
+            <span>Mode gelap</span>
+            <button id="themeToggle" class="toggle" type="button" aria-pressed="false" aria-label="Aktifkan atau nonaktifkan mode gelap">
+              <span class="toggle-thumb"></span>
+            </button>
+          </div>
+        </section>
+
+        <div id="statusMessage" class="status-message" role="status" aria-live="polite"></div>
+        <div id="prayerList" class="prayer-list" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="aboutView" class="view view-about" hidden>
+      <div class="container prose-card">
+        <p class="eyebrow">Informasi</p>
+        <h1>Tentang Aplikasi</h1>
+        <p>
+          Aplikasi ini merupakan media bantu membaca Al-Ma'tsurat Hasan Al-Banna.
+          Aplikasi dibuat sebagai website statis sehingga dapat dihosting secara gratis melalui GitHub Pages.
+        </p>
+        <p>
+          Tidak ada login, registrasi, maupun database pengguna. Preferensi seperti mode gelap,
+          ukuran font, bacaan terakhir, dan counter hanya disimpan secara lokal pada browser masing-masing pengguna.
+        </p>
+        <h2>Catatan Konten</h2>
+        <p>
+          Data bacaan pada paket ini sudah dirapikan dalam format JSON agar lebih mudah ditampilkan.
+          Sebelum digunakan secara luas, teks Arab, terjemahan, urutan bacaan, dan jumlah pengulangan tetap perlu diverifikasi
+          terhadap rujukan Al-Ma'tsurat Hasan Al-Banna atau sumber resmi yang Bapak gunakan.
+        </p>
+        <h2>Hak Cipta dan Atribusi</h2>
+        <p>
+          Hindari menyalin source code, desain, aset, atau terjemahan dari website lain tanpa izin.
+          Gunakan data yang telah diverifikasi dan cantumkan rujukan pada setiap item bacaan melalui field <code>sumber</code>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> Al-Ma'tsurat Hasan Al-Banna</span>
+      <span>Dibuat untuk GitHub Pages</span>
+    </div>
+  </footer>
+
+  <noscript>
+    <div class="noscript">Aplikasi ini membutuhkan JavaScript untuk menampilkan data bacaan.</div>
+  </noscript>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>
