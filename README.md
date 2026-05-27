@@ -1,22 +1,19 @@
-# Al-Ma'tsurat Hasan Al-Banna — GitHub Pages
+# Al-Ma'tsurat Hasan Al-Banna - Wazifah Sugro
 
-Aplikasi web statis untuk membaca Al-Ma'tsurat Hasan Al-Banna. Aplikasi ini dibuat tanpa login, tanpa database, dan dapat langsung dipublikasikan melalui GitHub Pages.
+Aplikasi web statis untuk membaca **Wazifah Sugro** dari Al-Ma'tsurat Hasan Al-Banna. Aplikasi ini dapat dipasang langsung di GitHub Pages tanpa backend dan tanpa database.
 
-## Isi Perbaikan Versi Ini
+## Perubahan versi optimasi
 
-- Menjadikan paket `json-rapi` sebagai basis karena data bacaan lebih lengkap.
-- Menambahkan menu **Wazifah Sugro**.
-- Memperbaiki pembacaan data JSON agar mendukung format array langsung maupun format terstruktur dengan properti `data`.
-- Menambahkan normalisasi data: `id`, `judul`, `urutan`, dan `jumlah`.
-- Menambahkan progress bacaan: `x / total selesai`.
-- Memperbaiki counter agar tersimpan per jenis bacaan: pagi, petang, dan wazifah.
-- Memperbaiki tampilan teks Arab multiline agar label seperti `Ayat 1` tidak tercampur sebagai teks Arab RTL.
-- Menambahkan pencarian pada judul, teks Arab, arti, sumber, catatan, dan kategori.
-- Menambahkan penanganan error bila JSON tidak dapat dimuat.
-- Menambahkan proteksi `localStorage` agar aplikasi tetap berjalan pada browser yang membatasi penyimpanan lokal.
-- Memperbaiki tampilan mobile untuk tombol dan kartu bacaan.
+- File JSON terpisah sudah dihapus.
+- Data 32 bacaan Wazifah Sugro sekarang tertanam langsung di `js/app.js` sebagai konstanta `WAZIFAH_DATA`.
+- Aplikasi tidak lagi menggunakan `fetch()` untuk membaca `data/wazifah-sugro.json`.
+- Risiko error path JSON pada GitHub Pages berkurang.
+- Bacaan yang terdiri dari beberapa ayat tetap ditampilkan per ayat: teks Arab ayat diikuti langsung oleh artinya.
+- Opsi tampilan bacaan tetap tersedia: **Arab saja** atau **Arab + arti**.
+- Counter, progress, ukuran font, dan mode gelap tetap tersimpan lokal di browser.
+- Import Google Fonts dipindahkan ke `<head>` agar lebih rapi daripada `@import` di CSS.
 
-## Struktur Folder
+## Struktur File
 
 ```text
 almatsurat-gh-pages/
@@ -25,84 +22,58 @@ almatsurat-gh-pages/
 ├── .nojekyll
 ├── css/
 │   └── style.css
-├── js/
-│   └── app.js
-└── data/
-    ├── pagi.json
-    ├── petang.json
-    ├── wazifah-sugro.json
-    └── wazifah-sugro-structured.json
+└── js/
+    └── app.js
 ```
 
-## Cara Menjalankan Lokal
+## Cara Menjalankan di Lokal
 
-Karena aplikasi menggunakan `fetch()` untuk membaca file JSON, jalankan aplikasi melalui local server, bukan langsung membuka file `index.html`.
+Karena data sudah tertanam di JavaScript, aplikasi bisa dibuka langsung melalui `index.html`. Namun untuk hasil yang paling mendekati GitHub Pages, jalankan melalui server lokal:
 
 ```bash
-cd almatsurat-gh-pages
 python -m http.server 8000
 ```
 
-Lalu buka:
+Kemudian buka:
 
 ```text
 http://localhost:8000
 ```
 
-## Cara Upload ke GitHub Pages
+## Deploy ke GitHub Pages
 
-1. Buat repository baru di GitHub, misalnya `almatsurat-online`.
-2. Upload seluruh isi folder `almatsurat-gh-pages` ke repository tersebut.
-3. Buka **Settings** → **Pages**.
-4. Pada bagian **Build and deployment**, pilih:
-   - Source: `Deploy from a branch`
-   - Branch: `main`
-   - Folder: `/root`
-5. Klik **Save**.
-6. Tunggu hingga GitHub Pages aktif.
-
-URL biasanya berbentuk:
-
-```text
-https://USERNAME.github.io/almatsurat-online/
-```
+1. Upload semua file ke repository GitHub.
+2. Masuk ke **Settings** → **Pages**.
+3. Pada bagian **Build and deployment**, pilih branch yang digunakan, misalnya `main`.
+4. Pilih folder `/root`.
+5. Simpan pengaturan.
 
 ## Mengubah Data Bacaan
 
-Edit file berikut sesuai kebutuhan:
+Data bacaan berada di file:
 
-- `data/pagi.json`
-- `data/petang.json`
-- `data/wazifah-sugro.json`
-
-Contoh struktur item:
-
-```json
-{
-  "urutan": 1,
-  "id": "001-taawudz",
-  "judul": "Ta'awudz",
-  "arab": "...",
-  "latin": "...",
-  "arti": "...",
-  "jumlah": 1,
-  "kategori": "pagi-petang",
-  "sumber": "Al-Ma'tsurat Wazifah Sugro",
-  "catatan": "Opsional"
-}
+```text
+js/app.js
 ```
 
-## Catatan Penting Konten
+Cari bagian berikut:
 
-Data bacaan sudah dirapikan secara teknis agar dapat ditampilkan oleh aplikasi. Sebelum digunakan untuk publikasi luas, verifikasi kembali:
+```js
+const WAZIFAH_DATA = [...];
+```
 
-- Urutan bacaan Al-Ma'tsurat Hasan Al-Banna
-- Teks Arab
-- Transliterasi
-- Terjemahan
-- Jumlah pengulangan
-- Rujukan sumber
+Ubah data pada konstanta tersebut jika ada koreksi teks Arab, arti, urutan, atau jumlah pengulangan.
 
-## Tidak Ada Login
+## Catatan Font Arab
 
-Aplikasi ini tidak memiliki login, registrasi, database pengguna, atau penyimpanan data pribadi. Preferensi dan counter hanya disimpan pada browser masing-masing pengguna menggunakan `localStorage`.
+Aplikasi memakai urutan font Arab berikut:
+
+```css
+"ArabicFont", "Amiri Quran", "Noto Naskh Arabic", "Traditional Arabic", "Scheherazade New", serif
+```
+
+Jika ingin memakai font Arab lokal, tambahkan file font secara legal dan definisikan `@font-face` sendiri di `css/style.css`.
+
+## Catatan Konten
+
+Teks Arab, terjemahan, urutan bacaan, dan jumlah pengulangan tetap perlu diverifikasi ulang terhadap rujukan Al-Ma'tsurat Hasan Al-Banna atau sumber resmi yang digunakan sebelum dipublikasikan luas.

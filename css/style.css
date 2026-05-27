@@ -165,13 +165,12 @@ button {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  grid-template-columns: 1fr;
   gap: 28px;
   align-items: stretch;
 }
 
 .hero-copy,
-.hero-card,
 .prose-card,
 .reader-head,
 .settings-panel,
@@ -184,7 +183,9 @@ button {
 
 .hero-copy {
   padding: clamp(28px, 6vw, 58px);
+  max-width: 880px;
 }
+
 
 .eyebrow {
   display: inline-flex;
@@ -222,6 +223,10 @@ html[data-theme="dark"] .prose-card h1 {
 .reader-description {
   color: var(--muted);
   max-width: 62ch;
+}
+
+.reader-description[hidden] {
+  display: none;
 }
 
 .hero-actions,
@@ -266,38 +271,6 @@ html[data-theme="dark"] .prose-card h1 {
   border: 1px solid var(--border);
 }
 
-.hero-card {
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.hero-card-icon {
-  display: grid;
-  place-items: center;
-  width: 62px;
-  height: 62px;
-  border-radius: 20px;
-  background: var(--accent);
-  font-size: 2rem;
-}
-
-.hero-card h2 {
-  margin: 18px 0 8px;
-  color: var(--primary);
-}
-
-html[data-theme="dark"] .hero-card h2 {
-  color: #fff;
-}
-
-.feature-list {
-  display: grid;
-  gap: 8px;
-  padding-left: 20px;
-  color: var(--muted);
-}
 
 .reader-head {
   display: flex;
@@ -314,7 +287,7 @@ html[data-theme="dark"] .hero-card h2 {
 
 .settings-panel {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) 180px 160px;
+  grid-template-columns: minmax(150px, 200px) minmax(180px, 220px) minmax(150px, 170px);
   gap: 14px;
   align-items: end;
   padding: 18px;
@@ -386,6 +359,13 @@ a:focus-visible {
   background: var(--accent);
 }
 
+
+.display-mode-hint {
+  color: var(--muted);
+  font-size: 0.86rem;
+  margin: -4px 2px 14px;
+}
+
 .status-message {
   min-height: 24px;
   color: var(--muted);
@@ -443,7 +423,7 @@ html[data-theme="dark"] .prayer-title {
 .arabic-text {
   direction: rtl;
   text-align: right;
-  font-family: "Traditional Arabic", "Amiri", "Scheherazade New", "Noto Naskh Arabic", serif;
+  font-family: "ArabicFont", "Amiri Quran", "Noto Naskh Arabic", "Traditional Arabic", "Scheherazade New", serif;
   font-size: var(--arabic-size);
   line-height: 2.25;
   color: var(--primary);
@@ -701,6 +681,44 @@ html[data-theme="dark"] .error-card strong {
   border-radius: 999px;
   padding: 3px 9px;
   margin-top: 4px;
+}
+
+
+.verse-list {
+  display: grid;
+  gap: 18px;
+  margin: 0 0 18px;
+}
+
+.verse-segment {
+  display: grid;
+  gap: 8px;
+}
+
+.verse-segment + .verse-segment {
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.verse-segment .arabic-text {
+  margin-bottom: 0;
+}
+
+.verse-label {
+  justify-self: start;
+  margin: 0;
+}
+
+.verse-translation {
+  margin: 0;
+  padding: 12px 14px;
+  border-left: 4px solid var(--accent);
+  background: color-mix(in srgb, var(--surface-2) 58%, transparent);
+  border-radius: 14px;
+}
+
+html[data-theme="dark"] .verse-translation {
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .counter-actions {
