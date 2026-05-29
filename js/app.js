@@ -22,7 +22,7 @@ const READER_ROUTES = {
   wazifah: {
     title: 'Wazifah Sughro',
     eyebrow: "Al-Ma'tsurat Hasan Al-Banna",
-    description: 'Bacaan ringkas pagi dan petang yang sudah tersedia pada versi awal aplikasi.'
+    description: 'Rangkaian bacaan yang ringkas untuk pagi dan petang.'
   },
   'doa-sholat': {
     title: 'Dzikir Setelah Shalat',
@@ -32,7 +32,7 @@ const READER_ROUTES = {
   'wazifah-kubro': {
     title: 'Wazifah Kubro',
     eyebrow: "Al-Ma'tsurat Hasan Al-Banna",
-    description: 'Susunan Wazifah Kubro berdasarkan file wazifah_kubro_arabic_improved.json dengan teks Arab yang sudah dirapikan dan dinormalisasi.'
+    description: 'Rangkaian bacaan pagi dan petang yang lebih lengkap, meliputi surat-surat pendek, ayat kursi, dan doa-doa pilihan lainnya.'
   }
 };
 
