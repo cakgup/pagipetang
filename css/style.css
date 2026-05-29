@@ -1342,3 +1342,199 @@ html[data-theme="dark"] .summary-pill strong { color: var(--accent); }
     font-size: 3rem;
   }
 }
+
+/* ==========================================================
+   Patch keamanan tampilan untuk layar 720 x 1280 piksel
+   Menjaga halaman beranda agar tidak melebar secara horizontal.
+   ========================================================== */
+.hero-copy {
+  width: 100%;
+  max-width: min(880px, 100%);
+  box-sizing: border-box;
+}
+
+.motivation-verse {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.quick-menu {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .quick-menu {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================================
+   Patch penyesuaian ukuran card & font menu beranda
+   untuk layar menengah seperti 720 x 1280 piksel
+   ========================================================== */
+@media (max-width: 900px) {
+  .quick-menu {
+    gap: 12px;
+  }
+
+  .menu-card {
+    min-height: 200px;
+    padding: 18px 16px 20px;
+    border-radius: 24px;
+  }
+
+  .menu-card::before {
+    width: 180px;
+    height: 180px;
+    right: -34px;
+    bottom: -56px;
+  }
+
+  .menu-card h2 {
+    font-size: clamp(1.2rem, 2.6vw, 1.5rem);
+    margin-bottom: 8px;
+    line-height: 1.08;
+  }
+
+  .menu-card p {
+    max-width: 16ch;
+    font-size: 0.74rem;
+    line-height: 1.35;
+  }
+
+  .menu-card-arabic {
+    font-size: clamp(2.4rem, 4.4vw, 3.2rem);
+  }
+
+  .menu-card--dzikir .menu-card-arabic {
+    font-size: clamp(2.2rem, 4vw, 2.8rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .quick-menu {
+    gap: 10px;
+  }
+
+  .menu-card {
+    min-height: 188px;
+    padding: 14px 12px 16px;
+    border-radius: 20px;
+  }
+
+  .menu-card h2 {
+    font-size: clamp(0.98rem, 3.6vw, 1.1rem);
+  }
+
+  .menu-card p {
+    font-size: 0.72rem;
+    line-height: 1.32;
+  }
+
+  .menu-card-arabic {
+    font-size: 2.2rem;
+  }
+
+  .menu-card--dzikir .menu-card-arabic {
+    font-size: 2rem;
+  }
+}
+
+/* ==========================================================
+   Patch lanjutan: card menu beranda lebih kecil lagi
+   ========================================================== */
+@media (max-width: 900px) {
+  .quick-menu {
+    gap: 10px;
+    max-width: 620px;
+  }
+
+  .menu-card {
+    min-height: 172px;
+    padding: 13px 12px 14px;
+    border-radius: 18px;
+  }
+
+  .menu-card::before {
+    width: 145px;
+    height: 145px;
+    right: -30px;
+    bottom: -48px;
+  }
+
+  .menu-card h2 {
+    font-size: clamp(0.95rem, 2.15vw, 1.18rem);
+    margin-bottom: 6px;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+
+  .menu-card p {
+    max-width: 15ch;
+    font-size: 0.64rem;
+    line-height: 1.3;
+  }
+
+  .menu-card-arabic {
+    font-size: clamp(1.9rem, 3.6vw, 2.45rem);
+    line-height: 0.95;
+  }
+
+  .menu-card--dzikir .menu-card-arabic {
+    font-size: clamp(1.75rem, 3.3vw, 2.25rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .quick-menu {
+    gap: 8px;
+  }
+
+  .menu-card {
+    min-height: 158px;
+    padding: 12px 10px 13px;
+    border-radius: 16px;
+  }
+
+  .menu-card h2 {
+    font-size: clamp(0.88rem, 3.2vw, 1rem);
+    margin-bottom: 5px;
+  }
+
+  .menu-card p {
+    font-size: 0.62rem;
+    line-height: 1.28;
+  }
+
+  .menu-card-arabic {
+    font-size: 1.8rem;
+  }
+
+  .menu-card--dzikir .menu-card-arabic {
+    font-size: 1.65rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .menu-card {
+    flex-basis: 190px;
+    min-height: 176px;
+  }
+
+  .menu-card h2 {
+    font-size: 1.18rem;
+  }
+
+  .menu-card p {
+    font-size: 0.74rem;
+  }
+
+  .menu-card-arabic {
+    font-size: 2.1rem;
+  }
+
+  .menu-card--dzikir .menu-card-arabic {
+    font-size: 1.95rem;
+  }
+}
+
