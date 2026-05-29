@@ -736,8 +736,13 @@ async function refreshHomePrayerWidget() {
     homePrayerState.nextTime = nextPrayer.time;
     homePrayerState.remainingSeconds = nextPrayer.remainingSeconds;
 
+<<<<<<< HEAD
     if (homePrayerNext) homePrayerNext.innerHTML = `<span class="home-prayer-name">${nextPrayer.name}</span><span class="home-prayer-separator"> | </span><span class="home-prayer-time">${nextPrayer.time}</span>`;
     if (homePrayerCountdownLabel) homePrayerCountdownLabel.textContent = 'Menuju Waktu Shalat';
+=======
+    if (homePrayerNext) homePrayerNext.textContent = `${nextPrayer.name} | ${nextPrayer.time}`;
+    if (homePrayerCountdownLabel) homePrayerCountdownLabel.textContent = 'menuju waktu shalat';
+>>>>>>> d91ca045286e3b813802629b183b89dc6614fbed
 
     homePrayerWidget.classList.add('is-ready');
     renderHomePrayerCountdown();
