@@ -1,64 +1,91 @@
 <!doctype html>
-<html lang="id">
+<html lang="id" data-theme="light" data-font-size="medium" data-display-mode="arab-translation">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Di antara fajar yang menyingsing dan senja yang meremang, ada waktu emas untuk menyambung koneksi dengan Sang Pencipta. Mengamalkan dzikir pagi dan petang adalah bukti bahwa kita sadar, pertolongan Allah adalah satu-satunya bekal paling berharga." />
-  <meta name="theme-color" content="#1A3A6B" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1A3A6B">
+  <meta name="description" content="Aplikasi bacaan doa pagi petang, Wazifah Sughro, Wazifah Kubro, dan Dzikir Setelah Shalat.">
   <title>Al-Ma'tsurat Hasan Al-Banna</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Inter:wght@400;600;700;800;900&family=Noto+Naskh+Arabic:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="js/app.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#mainContent">Lewati ke konten utama</a>
 
   <header class="site-header">
     <div class="container header-inner">
-      <a class="brand" href="#home" aria-label="Buka halaman utama">
-        <span class="brand-mark" aria-hidden="true">م</span>
+      <a class="brand" href="#home" aria-label="Kembali ke beranda">
+        <span class="brand-mark">م</span>
         <span>
-          <strong>Al-Ma'tsurat</strong>
-          <small>Hasan Al-Banna</small>
+          <strong>Al-Ma'tsurat Hasan Al-Banna</strong>
+          <small>Doa pagi, petang, dan setelah shalat</small>
         </span>
       </a>
-      <div class="header-actions" aria-label="Kontrol tampilan dan audio">
-        <button id="fontDecreaseBtn" class="icon-button header-icon-button" type="button" aria-label="Perkecil font">-</button>
-        <button id="fontIncreaseBtn" class="icon-button header-icon-button" type="button" aria-label="Perbesar font">+</button>
-        <button id="themeToggle" class="icon-button header-icon-button theme-icon-button" type="button" aria-pressed="false" aria-label="Aktifkan atau nonaktifkan mode gelap">
-          <span aria-hidden="true">☾</span>
-        </button>
-        <button id="soundToggleBtn" class="icon-button header-icon-button sound-button" type="button" aria-label="Putar backsound" aria-pressed="false">
-          <span aria-hidden="true">♫</span>
-        </button>
+
+      <nav class="top-nav" aria-label="Navigasi utama">
+        <a href="#home" data-nav-link="home">Beranda</a>
+        <a href="#wazifah" data-nav-link="wazifah">Sughro</a>
+        <a href="#wazifah-kubro" data-nav-link="wazifah-kubro">Kubro</a>
+        <a href="#doa-sholat" data-nav-link="doa-sholat">Dzikir Shalat</a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="font-header-controls" aria-label="Ukuran huruf">
+          <button class="icon-button header-icon-button font-icon-button" id="fontDecreaseBtn" type="button" aria-label="Perkecil huruf">-</button>
+          <button class="icon-button header-icon-button font-icon-button" id="fontIncreaseBtn" type="button" aria-label="Perbesar huruf">+</button>
+        </div>
+        <button class="icon-button header-icon-button theme-icon-button" id="themeToggle" type="button" aria-label="Ubah mode gelap" aria-pressed="false">☾</button>
+        <button class="icon-button header-icon-button sound-button" id="soundToggleBtn" type="button" aria-label="Putar backsound" aria-pressed="false">♫</button>
       </div>
-      <audio id="backsoundAudio" src="assets/doa.mp3" preload="auto" loop></audio>
     </div>
   </header>
 
   <main id="mainContent" class="main-content">
-    <section id="homeView" class="view view-home" aria-labelledby="homeTitle">
-      <div class="container hero">
-        <div class="hero-copy">
-          <p class="eyebrow hero-badge">DOA PAGI DAN PETANG</p>
-          <h1 id="homeTitle" class="sr-only">WAZIFAH SUGRO</h1>
-          <img class="hero-logo" src="assets/logo_doa.png" alt="Wazifah Sugro" />
-          <figure class="motivation-verse">
-            <p class="motivation-arabic" dir="rtl" lang="ar">فَسُبْحَانَ اللَّهِ حِينَ تُمْسُونَ وَحِينَ تُصْبِحُونَ</p>
-            <figcaption>
-              “Maka bertasbihlah kepada Allah di waktu kamu berada di sore hari dan waktu kamu berada di waktu pagi hari” <span>(QS. Ar-Rum:17).</span>
-            </figcaption>
-          </figure>
-          <p class="hero-description">
-            Di antara fajar yang menyingsing dan senja yang meremang, ada waktu emas untuk menyambung koneksi dengan Sang Pencipta. Mengamalkan dzikir pagi dan petang adalah bukti bahwa kita sadar, pertolongan Allah adalah satu-satunya bekal paling berharga.
-          </p>
-          <div class="hero-actions" aria-label="Pilihan bacaan utama">
-            <a class="btn btn-primary" href="#wazifah">Mulai Wazifah Sugro</a>
-          </div>
-          <p class="hero-credit">© <span id="year"></span> Developed by CakGup</p>
-        </div>
+    <section id="homeView" class="view view-home">
+      <div class="container">
+        <div class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow hero-badge">DOA PAGI, PETANG, DAN SETELAH SHALAT</p>
+            <img class="hero-logo" src="assets/logo_doa.png" alt="Wazifah Sughro" loading="eager">
+            <figure class="motivation-verse">
+              <p class="motivation-arabic" dir="rtl" lang="ar">فَسُبْحَانَ اللَّهِ حِينَ تُمْسُونَ وَحِينَ تُصْبِحُونَ</p>
+              <figcaption>“Maka bertasbihlah kepada Allah di waktu kamu berada di sore hari dan waktu kamu berada di waktu pagi hari” <span>(QS. Ar-Rum:17)</span>.</figcaption>
+            </figure>
+            <p class="hero-description">Pilih bacaan yang ingin dibuka. Semua data bacaan ditanam langsung ke aplikasi agar tetap ringan untuk GitHub Pages dan dapat dibuka tanpa request file JSON terpisah.</p>
 
+            <div class="hero-summary" aria-label="Ringkasan koleksi bacaan">
+              <div class="summary-pill"><strong>3</strong><span>Koleksi</span></div>
+              <div class="summary-pill"><strong>Offline-ready</strong><span>Tanpa fetch JSON</span></div>
+              <div class="summary-pill"><strong>Mobile</strong><span>Layout responsif</span></div>
+            </div>
+
+            <div class="quick-menu" aria-label="Pilihan bacaan">
+              <a class="menu-card" href="#wazifah">
+                <span class="menu-card-icon">ص</span>
+                <h2>Wazifah Sughro</h2>
+                <p>Bacaan Al-Ma'tsurat ringkas untuk pagi dan petang.</p>
+                <small>Buka bacaan →</small>
+              </a>
+              <a class="menu-card" href="#wazifah-kubro">
+                <span class="menu-card-icon">ك</span>
+                <h2>Wazifah Kubro</h2>
+                <p>Susunan bacaan lebih panjang berdasarkan data referensi yang diberikan.</p>
+                <small>Buka bacaan →</small>
+              </a>
+              <a class="menu-card" href="#doa-sholat">
+                <span class="menu-card-icon">د</span>
+                <h2>Dzikir Setelah Shalat</h2>
+                <p>Rangkaian istighfar, tahlil, dzikir, ayat pilihan, dan doa penutup.</p>
+                <small>Buka bacaan →</small>
+              </a>
+            </div>
+
+            <p class="hero-credit">© <span id="year"></span> Developed by CakGup</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -67,12 +94,21 @@
         <div class="reader-head">
           <div>
             <p class="eyebrow" id="readerEyebrow">Bacaan</p>
-            <h1 id="readerTitle">Wazifah Sugro</h1>
-            <p id="readerDescription" class="reader-description"></p>
+            <h1 id="readerTitle">Wazifah Sughro</h1>
+            <p class="reader-description" id="readerDescription"></p>
+            <div class="reader-actions">
+              <a class="btn btn-ghost" href="#home">← Beranda</a>
+              <span class="progress-pill" id="progressText">0 / 0 selesai</span>
+            </div>
           </div>
+          <span class="route-chip">Arab + arti tersedia</span>
         </div>
 
-        <section class="settings-panel" aria-label="Pengaturan tampilan">
+        <div class="settings-panel" aria-label="Pengaturan bacaan">
+          <div class="field-group">
+            <label for="searchInput">Cari bacaan</label>
+            <input id="searchInput" type="search" placeholder="Cari judul, ayat, doa, atau arti..." autocomplete="off">
+          </div>
           <div class="field-group">
             <label for="displayModeSelect">Tampilan bacaan</label>
             <select id="displayModeSelect">
@@ -80,20 +116,30 @@
               <option value="arab-translation">Arab + arti</option>
             </select>
           </div>
+          <div class="field-group">
+            <span>Aksi</span>
+            <div class="counter-actions">
+              <button class="btn btn-ghost" id="resetCountersBtn" type="button">Reset</button>
+              <button class="btn btn-accent" id="printBtn" type="button">Cetak</button>
+            </div>
+          </div>
+        </div>
 
-        </section>
-
+        <p class="display-mode-hint">Gunakan tombol “Sudah dibaca” untuk menandai progres bacaan pada perangkat ini.</p>
         <div id="statusMessage" class="status-message" role="status" aria-live="polite"></div>
-        <div id="prayerList" class="prayer-list" aria-live="polite"></div>
+        <div id="prayerList" class="prayer-list"></div>
       </div>
     </section>
-
   </main>
 
-  <noscript>
-    <div class="noscript">Aplikasi ini membutuhkan JavaScript untuk menampilkan data bacaan.</div>
-  </noscript>
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>Al-Ma'tsurat Hasan Al-Banna</span>
+      <span>GitHub Pages static app</span>
+    </div>
+  </footer>
 
-  <script src="js/app.js" defer></script>
+  <audio id="backsoundAudio" src="assets/doa.mp3" preload="none" loop></audio>
+  <noscript><div class="noscript">Aplikasi ini membutuhkan JavaScript untuk menampilkan data bacaan.</div></noscript>
 </body>
 </html>
