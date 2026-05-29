@@ -727,7 +727,7 @@ async function refreshHomePrayerWidget() {
     if (!nextPrayer) {
       const tomorrow = getTomorrowParts(now.year, now.month, now.day);
       const tomorrowSchedule = await fetchPrayerSchedule(tomorrow.year, tomorrow.month, tomorrow.day);
-      nextPrayer = findFirstPrayer(tomorrowSchedule, 1);
+      nextPrayer = findFirstPrayer(tomorrowSchedule, now, 1);
     }
 
     if (!nextPrayer) throw new Error('Jadwal shalat tidak tersedia.');
@@ -786,7 +786,7 @@ function findNextPrayer(schedule, nowParts) {
   return null;
 }
 
-function findFirstPrayer(schedule, dayOffset = 0) {
+function findFirstPrayer(schedule, nowParts, dayOffset = 0) {
   if (!schedule) return null;
   const prayers = [
     ['subuh', 'Subuh'],
@@ -795,11 +795,21 @@ function findFirstPrayer(schedule, dayOffset = 0) {
     ['maghrib', 'Maghrib'],
     ['isya', 'Isya']
   ];
+
+  const nowSeconds = nowParts
+    ? toDaySeconds(nowParts.hour, nowParts.minute, nowParts.second)
+    : 0;
+
   for (const [key, label] of prayers) {
     const time = normalizePrayerTime(schedule[key]);
     if (!time) continue;
     const prayerSeconds = parseTimeToSeconds(time);
-    return { name: label, time, remainingSeconds: prayerSeconds + (dayOffset * 86400) };
+
+    // Jika mengambil jadwal besok, sisa waktu harus:
+    // sisa detik hari ini + detik menuju waktu shalat besok.
+    const remainingSeconds = (dayOffset * 86400) - nowSeconds + prayerSeconds;
+
+    return { name: label, time, remainingSeconds };
   }
   return null;
 }
