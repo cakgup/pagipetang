@@ -1,31 +1,31 @@
 {
-  "id": "/pagipetang/",
+  "id": "./",
   "name": "PagiPetang - Al-Ma'tsurat",
   "short_name": "PagiPetang",
   "description": "Aplikasi bacaan dzikir pagi dan petang Al-Ma'tsurat Hasan Al-Banna.",
   "lang": "id",
   "dir": "ltr",
-  "start_url": "/pagipetang/",
-  "scope": "/pagipetang/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F7F3E8",
   "theme_color": "#1A3A6B",
   "icons": [
     {
-      "src": "/pagipetang/assets/icons/icon-192.png",
+      "src": "assets/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/pagipetang/assets/icons/icon-512.png",
+      "src": "assets/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/pagipetang/assets/icons/maskable-512.png",
+      "src": "assets/icons/maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

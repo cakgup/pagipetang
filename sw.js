@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pagipetang-v1';
+const CACHE_NAME = 'pagipetang-v2';
 
 const APP_ASSETS = [
   './',
@@ -14,28 +14,38 @@ const APP_ASSETS = [
   './assets/icons/maskable-512.png'
 ];
 
-self.addEventListener('install', event => {
+self.addEventListener('install', function (event) {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_ASSETS))
+    caches.open(CACHE_NAME).then(function (cache) {
+      return cache.addAll(APP_ASSETS);
+    })
   );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', event => {
+self.addEventListener('activate', function (event) {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))
-    )
+    caches.keys().then(function (cacheNames) {
+      return Promise.all(
+        cacheNames
+          .filter(function (cacheName) {
+            return cacheName !== CACHE_NAME;
+          })
+          .map(function (cacheName) {
+            return caches.delete(cacheName);
+          })
+      );
+    })
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', function (event) {
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      return cached || fetch(event.request);
+    caches.match(event.request).then(function (cachedResponse) {
+      return cachedResponse || fetch(event.request);
     })
   );
 });

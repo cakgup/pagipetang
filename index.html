@@ -8,7 +8,8 @@
   <title>Al-Ma'tsurat Hasan Al-Banna</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/icon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="PagiPetang">
@@ -156,12 +157,18 @@
 
   <audio id="backsoundAudio" src="assets/doa.mp3" preload="none" loop></audio>
   <noscript><div class="noscript">Aplikasi ini membutuhkan JavaScript untuk menampilkan data bacaan.</div></noscript>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('sw.js', { scope: './' });
-    });
-  }
-</script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+          .then(function () {
+            console.log('Service Worker berhasil didaftarkan');
+          })
+          .catch(function (error) {
+            console.warn('Service Worker gagal didaftarkan:', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
