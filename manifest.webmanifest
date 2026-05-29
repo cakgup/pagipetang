@@ -1,0 +1,16 @@
+{
+  "name": "Al-Ma'tsurat Hasan Al-Banna",
+  "short_name": "Al-Ma'tsurat",
+  "description": "Aplikasi bacaan doa pagi petang, Wazifah Sughro, Wazifah Kubro, dan Dzikir Setelah Shalat.",
+  "start_url": "/pagipetang/",
+  "scope": "/pagipetang/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
