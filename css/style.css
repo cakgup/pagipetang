@@ -143,6 +143,20 @@ button {
   display: block;
 }
 
+
+.brand-title {
+  white-space: nowrap;
+}
+
+.brand-plus {
+  color: var(--accent);
+  font-weight: 900;
+  font-size: 0.62em;
+  line-height: 0;
+  margin-left: 0.08em;
+  vertical-align: super;
+}
+
 .brand small {
   color: rgba(255, 255, 255, 0.78);
   font-size: 0.83rem;
@@ -1696,75 +1710,3 @@ html[data-theme="dark"] .summary-pill strong { color: var(--accent); }
   }
 }
 
-
-
-/* ==========================================================
-   Patch navigasi atas: font lebih kecil dan Beranda menjadi ikon rumah
-   ========================================================== */
-.top-nav {
-  gap: 6px;
-}
-
-.top-nav a {
-  padding: 8px 10px;
-  font-size: 0.82rem;
-  line-height: 1;
-}
-
-.top-nav .nav-home-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 34px;
-  padding: 0;
-}
-
-.nav-home-icon {
-  display: block;
-  width: 18px;
-  height: 18px;
-}
-
-@media (max-width: 640px) {
-  .top-nav {
-    gap: 6px;
-    padding-top: 2px;
-  }
-
-  .top-nav a {
-    padding: 8px 9px;
-    font-size: 0.78rem;
-  }
-
-  .top-nav .nav-home-link {
-    width: 34px;
-    height: 32px;
-  }
-
-  .nav-home-icon {
-    width: 17px;
-    height: 17px;
-  }
-}
-
-@media (max-width: 430px) {
-  .top-nav {
-    gap: 5px;
-  }
-
-  .top-nav a {
-    padding: 7px 7px;
-    font-size: 0.74rem;
-  }
-
-  .top-nav .nav-home-link {
-    width: 31px;
-    height: 30px;
-  }
-
-  .nav-home-icon {
-    width: 16px;
-    height: 16px;
-  }
-}
