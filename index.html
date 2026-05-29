@@ -156,5 +156,12 @@
 
   <audio id="backsoundAudio" src="assets/doa.mp3" preload="none" loop></audio>
   <noscript><div class="noscript">Aplikasi ini membutuhkan JavaScript untuk menampilkan data bacaan.</div></noscript>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js', { scope: './' });
+    });
+  }
+</script>
 </body>
 </html>
