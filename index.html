@@ -20,10 +20,16 @@
       <a class="brand" href="#home" aria-label="Kembali ke beranda">
         <span class="brand-mark">م</span>
         <span>
-          <strong>Al-Ma'tsurat Hasan Al-Banna</strong>
-          <small>Doa pagi, petang, dan setelah shalat</small>
+          <strong>Al-Ma'tsurat</strong>
+          <small>Hasan Al-Banna</small>
         </span>
       </a>
+
+      <div class="home-prayer-widget" id="homePrayerWidget" hidden aria-live="polite">
+        <div class="home-prayer-next" id="homePrayerNext"><span class="home-prayer-name">Dzuhur</span><span class="home-prayer-separator"> | </span><span class="home-prayer-time">12:05</span></div>
+        <div class="home-prayer-countdown-label" id="homePrayerCountdownLabel">Menuju Waktu Shalat</div>
+        <div class="home-prayer-countdown" id="homePrayerCountdown">01 : 19 : 15</div>
+      </div>
 
       <nav class="top-nav" aria-label="Navigasi utama">
         <a href="#home" data-nav-link="home">Beranda</a>
@@ -62,23 +68,20 @@
             </div>
 
             <div class="quick-menu" aria-label="Pilihan bacaan">
-              <a class="menu-card" href="#wazifah">
-                <span class="menu-card-icon">ص</span>
-                <h2>Wazifah Sughro</h2>
-                <p>Bacaan Al-Ma'tsurat ringkas untuk pagi dan petang.</p>
-                <small>Buka bacaan →</small>
+              <a class="menu-card menu-card--sughro" href="#wazifah">
+                <h2>Sughro</h2>
+                <p>Rangkaian bacaan yang ringkas untuk pagi dan petang</p>
+                <div class="menu-card-arabic" dir="rtl" lang="ar">صغرى</div>
               </a>
-              <a class="menu-card" href="#wazifah-kubro">
-                <span class="menu-card-icon">ك</span>
-                <h2>Wazifah Kubro</h2>
-                <p>Susunan bacaan lebih panjang berdasarkan data referensi yang diberikan.</p>
-                <small>Buka bacaan →</small>
+              <a class="menu-card menu-card--kubro" href="#wazifah-kubro">
+                <h2>Kubro</h2>
+                <p>Rangkaian bacaan yang lebih panjang untuk pagi dan petang</p>
+                <div class="menu-card-arabic" dir="rtl" lang="ar">كبرى</div>
               </a>
-              <a class="menu-card" href="#doa-sholat">
-                <span class="menu-card-icon">د</span>
-                <h2>Dzikir Setelah Shalat</h2>
-                <p>Rangkaian istighfar, tahlil, dzikir, ayat pilihan, dan doa penutup.</p>
-                <small>Buka bacaan →</small>
+              <a class="menu-card menu-card--dzikir" href="#doa-sholat">
+                <h2>Dzikir Shalat</h2>
+                <p>Rangkaian bacaan dzikir setelah shalat 5 waktu</p>
+                <div class="menu-card-arabic" dir="rtl" lang="ar">ذِكْر</div>
               </a>
             </div>
 
