@@ -1342,3 +1342,28 @@ html[data-theme="dark"] .summary-pill strong { color: var(--accent); }
     font-size: 3rem;
   }
 }
+
+/* ==========================================================
+   Patch keamanan tampilan untuk layar 720 x 1280 piksel
+   Menjaga halaman beranda agar tidak melebar secara horizontal.
+   ========================================================== */
+.hero-copy {
+  width: 100%;
+  max-width: min(880px, 100%);
+  box-sizing: border-box;
+}
+
+.motivation-verse {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.quick-menu {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .quick-menu {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
