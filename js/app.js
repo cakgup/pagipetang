@@ -3,7 +3,9 @@ const STORAGE_KEYS = {
   fontSize: 'almatsurat.fontSize',
   displayMode: 'almatsurat.displayMode',
   counters: 'almatsurat.counters',
-  lastRoute: 'almatsurat.lastRoute'
+  lastRoute: 'almatsurat.lastRoute',
+  prayerProvince: 'almatsurat.prayerProvince',
+  prayerCity: 'almatsurat.prayerCity'
 };
 
 // Data bacaan dibuat menyatu di app.js agar aplikasi tidak perlu request file JSON terpisah.
@@ -36,6 +38,10 @@ const READER_ROUTES = {
   }
 };
 
+const EQURAN_BASE = 'https://equran.id/api/v2/shalat';
+const DEFAULT_PRAYER_PROVINCE = 'DKI Jakarta';
+const DEFAULT_PRAYER_CITY = 'Kota Jakarta Pusat';
+
 const state = {
   currentView: 'home',
   currentRoute: 'home',
@@ -43,7 +49,9 @@ const state = {
   currentType: null,
   dataCache: {},
   counters: loadJson(STORAGE_KEYS.counters, {}),
-  displayMode: 'arab-translation'
+  displayMode: 'arab-translation',
+  prayerProvince: safeStorageGet(STORAGE_KEYS.prayerProvince) || DEFAULT_PRAYER_PROVINCE,
+  prayerCity: safeStorageGet(STORAGE_KEYS.prayerCity) || DEFAULT_PRAYER_CITY
 };
 
 const views = {
@@ -71,11 +79,19 @@ const homePrayerWidget = document.getElementById('homePrayerWidget');
 const homePrayerNext = document.getElementById('homePrayerNext');
 const homePrayerCountdownLabel = document.getElementById('homePrayerCountdownLabel');
 const homePrayerCountdown = document.getElementById('homePrayerCountdown');
+const homePrayerLocation = document.getElementById('homePrayerLocation');
+const homePrayerLocationBtn = document.getElementById('homePrayerLocationBtn');
+const homePrayerSettingsModal = document.getElementById('homePrayerSettingsModal');
+const homePrayerSettingsPanel = document.getElementById('homePrayerSettingsPanel');
+const homePrayerSettingsCloseBtn = document.getElementById('homePrayerSettingsCloseBtn');
+const homePrayerProvinceSelect = document.getElementById('homePrayerProvinceSelect');
+const homePrayerCitySelect = document.getElementById('homePrayerCitySelect');
+const homePrayerSaveLocationBtn = document.getElementById('homePrayerSaveLocationBtn');
+const homePrayerGpsBtn = document.getElementById('homePrayerGpsBtn');
+const homePrayerLocationStatus = document.getElementById('homePrayerLocationStatus');
 
 const HOME_PRAYER_CONFIG = {
-  cityId: '1301',
-  timezone: 'Asia/Jakarta',
-  apiBaseUrl: 'https://api.myquran.com/v2/sholat/jadwal/1301'
+  apiBaseUrl: EQURAN_BASE
 };
 
 const homePrayerState = {
@@ -83,7 +99,8 @@ const homePrayerState = {
   refreshPending: false,
   remainingSeconds: null,
   nextName: '',
-  nextTime: ''
+  nextTime: '',
+  settingsReady: false
 };
 
 if (year) year.textContent = new Date().getFullYear();
@@ -695,6 +712,7 @@ function formatCategory(value) {
 
 
 function initHomePrayerWidget() {
+  initHomePrayerLocationControls();
   updateHomePrayerWidgetVisibility();
   refreshHomePrayerWidget();
   if (homePrayerState.countdownInterval) clearInterval(homePrayerState.countdownInterval);
@@ -709,6 +727,79 @@ function initHomePrayerWidget() {
   }, 1000);
 }
 
+function initHomePrayerLocationControls() {
+  if (homePrayerState.settingsReady) return;
+  homePrayerState.settingsReady = true;
+
+  homePrayerLocationBtn?.addEventListener('click', async () => {
+    const willOpen = homePrayerSettingsModal?.hidden;
+    toggleHomePrayerSettings(willOpen);
+    if (willOpen) await hydrateHomePrayerLocationControls();
+  });
+
+  homePrayerSettingsCloseBtn?.addEventListener('click', () => toggleHomePrayerSettings(false));
+  homePrayerSettingsModal?.addEventListener('click', (event) => {
+    if (event.target === homePrayerSettingsModal) toggleHomePrayerSettings(false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && homePrayerSettingsModal && !homePrayerSettingsModal.hidden) {
+      toggleHomePrayerSettings(false);
+    }
+  });
+
+  homePrayerProvinceSelect?.addEventListener('change', async () => {
+    setHomePrayerLocationStatus('Memuat kabupaten/kota...');
+    try {
+      await fillHomePrayerCities(homePrayerProvinceSelect.value);
+      setHomePrayerLocationStatus('Pilih kabupaten/kota, lalu tekan Simpan Wilayah.');
+    } catch (error) {
+      setHomePrayerLocationStatus('Kabupaten/kota gagal dimuat. Coba lagi saat koneksi tersedia.');
+    }
+  });
+
+  homePrayerSaveLocationBtn?.addEventListener('click', async () => {
+    if (!homePrayerProvinceSelect || !homePrayerCitySelect) return;
+    state.prayerProvince = homePrayerProvinceSelect.value;
+    state.prayerCity = homePrayerCitySelect.value;
+    persistHomePrayerLocation();
+    setHomePrayerLocationStatus(`Wilayah disimpan: ${state.prayerCity}, ${state.prayerProvince}. Memperbarui jadwal...`);
+    try {
+      await loadHomePrayerSchedule(true);
+      await refreshHomePrayerWidget();
+      setHomePrayerLocationStatus(`Wilayah aktif: ${state.prayerCity}, ${state.prayerProvince}. Jadwal berhasil diperbarui.`);
+      toggleHomePrayerSettings(false);
+    } catch (error) {
+      setHomePrayerLocationStatus('Wilayah tersimpan, tetapi jadwal belum bisa diperbarui. Coba lagi saat online.');
+    }
+  });
+
+  homePrayerGpsBtn?.addEventListener('click', async () => {
+    setHomePrayerLocationStatus('Meminta izin GPS dan mendeteksi wilayah...');
+    try {
+      const detected = await detectRegionFromGps();
+      state.prayerProvince = detected.province;
+      state.prayerCity = detected.city;
+      persistHomePrayerLocation();
+      await hydrateHomePrayerLocationControls();
+      setHomePrayerLocationStatus(`GPS cocok dengan wilayah: ${state.prayerCity}, ${state.prayerProvince}. Memperbarui jadwal...`);
+      await loadHomePrayerSchedule(true);
+      await refreshHomePrayerWidget();
+      setHomePrayerLocationStatus(`Wilayah aktif: ${state.prayerCity}, ${state.prayerProvince}. Jadwal berhasil diperbarui.`);
+      toggleHomePrayerSettings(false);
+    } catch (error) {
+      setHomePrayerLocationStatus(error.message || 'GPS belum berhasil mencocokkan wilayah. Silakan pilih manual.');
+    }
+  });
+}
+
+function toggleHomePrayerSettings(forceOpen) {
+  if (!homePrayerSettingsModal || !homePrayerLocationBtn) return;
+  const nextOpen = typeof forceOpen === 'boolean' ? forceOpen : homePrayerSettingsModal.hidden;
+  homePrayerSettingsModal.hidden = !nextOpen;
+  homePrayerLocationBtn.setAttribute('aria-expanded', String(nextOpen));
+  document.body?.classList.toggle('home-prayer-modal-open', nextOpen);
+}
+
 function updateHomePrayerWidgetVisibility() {
   if (!homePrayerWidget) return;
   const shouldShow = state.currentView === 'home' && homePrayerWidget.classList.contains('is-ready');
@@ -720,16 +811,8 @@ async function refreshHomePrayerWidget() {
   homePrayerState.refreshPending = true;
 
   try {
-    const now = getJakartaDateTimeParts();
-    const todaySchedule = await fetchPrayerSchedule(now.year, now.month, now.day);
-    let nextPrayer = findNextPrayer(todaySchedule, now);
-
-    if (!nextPrayer) {
-      const tomorrow = getTomorrowParts(now.year, now.month, now.day);
-      const tomorrowSchedule = await fetchPrayerSchedule(tomorrow.year, tomorrow.month, tomorrow.day);
-      nextPrayer = findFirstPrayer(tomorrowSchedule, now, 1);
-    }
-
+    const schedule = await loadHomePrayerSchedule(false);
+    const nextPrayer = getNextPrayerFromSchedule(schedule);
     if (!nextPrayer) throw new Error('Jadwal shalat tidak tersedia.');
 
     homePrayerState.nextName = nextPrayer.name;
@@ -737,7 +820,11 @@ async function refreshHomePrayerWidget() {
     homePrayerState.remainingSeconds = nextPrayer.remainingSeconds;
 
     if (homePrayerNext) homePrayerNext.innerHTML = `<span class="home-prayer-name">${nextPrayer.name}</span><span class="home-prayer-separator"> | </span><span class="home-prayer-time">${nextPrayer.time}</span>`;
-    if (homePrayerCountdownLabel) homePrayerCountdownLabel.textContent = 'Menuju Waktu Shalat';
+    if (homePrayerCountdownLabel) homePrayerCountdownLabel.textContent = `${schedule.data.kabkota}, ${schedule.data.provinsi}`;
+    if (homePrayerLocation) {
+      homePrayerLocation.textContent = `${schedule.data.kabkota}, ${schedule.data.provinsi}`;
+      homePrayerLocation.hidden = true;
+    }
 
     homePrayerWidget.classList.add('is-ready');
     renderHomePrayerCountdown();
@@ -756,17 +843,47 @@ function renderHomePrayerCountdown() {
   homePrayerCountdown.textContent = formatCountdown(homePrayerState.remainingSeconds);
 }
 
-async function fetchPrayerSchedule(year, month, day) {
-  const url = `${HOME_PRAYER_CONFIG.apiBaseUrl}/${year}/${month}/${day}`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  const payload = await response.json();
-  return payload?.data?.jadwal || payload?.data || payload?.jadwal || null;
+async function loadHomePrayerSchedule(force = false) {
+  const now = new Date();
+  const month = now.getMonth() + 1;
+  const year = now.getFullYear();
+  const cacheKey = `almatsurat-prayer-${state.prayerProvince}-${state.prayerCity}-${year}-${month}`;
+  const cached = loadJson(cacheKey, null);
+  if (!force && cached?.data?.jadwal?.length) return cached;
+
+  try {
+    const response = await fetch(HOME_PRAYER_CONFIG.apiBaseUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        provinsi: state.prayerProvince,
+        kabkota: state.prayerCity,
+        bulan: month,
+        tahun: year
+      })
+    });
+    if (!response.ok) throw new Error('Jadwal shalat gagal dimuat.');
+    const json = await response.json();
+    if (json.code !== 200 || !json.data?.jadwal?.length) {
+      throw new Error(json.message || 'Format jadwal tidak sesuai.');
+    }
+    const payload = { data: json.data, cachedAt: new Date().toISOString() };
+    safeStorageSet(cacheKey, JSON.stringify(payload));
+    return payload;
+  } catch (error) {
+    if (cached?.data?.jadwal?.length) return cached;
+    throw error;
+  }
 }
 
-function findNextPrayer(schedule, nowParts) {
-  if (!schedule) return null;
-  const nowSeconds = toDaySeconds(nowParts.hour, nowParts.minute, nowParts.second);
+function getNextPrayerFromSchedule(schedulePayload) {
+  const jadwal = schedulePayload?.data?.jadwal || [];
+  if (!jadwal.length) return null;
+
+  const now = new Date();
+  const today = localYmd(now);
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const tomorrowYmd = localYmd(tomorrow);
   const prayers = [
     ['subuh', 'Subuh'],
     ['dzuhur', 'Dzuhur'],
@@ -774,76 +891,27 @@ function findNextPrayer(schedule, nowParts) {
     ['maghrib', 'Maghrib'],
     ['isya', 'Isya']
   ];
+  const candidates = [];
 
-  for (const [key, label] of prayers) {
-    const time = normalizePrayerTime(schedule[key]);
-    if (!time) continue;
-    const prayerSeconds = parseTimeToSeconds(time);
-    if (prayerSeconds > nowSeconds) {
-      return { name: label, time, remainingSeconds: prayerSeconds - nowSeconds };
+  for (const row of jadwal) {
+    if (![today, tomorrowYmd].includes(row.tanggal_lengkap)) continue;
+    const [year, month, day] = String(row.tanggal_lengkap).split('-').map(Number);
+    for (const [key, label] of prayers) {
+      const time = normalizePrayerTime(row[key]);
+      if (!time) continue;
+      const [hour, minute] = time.split(':').map(Number);
+      const date = new Date(year, month - 1, day, hour, minute, 0);
+      if (date > now) {
+        candidates.push({
+          name: label,
+          time,
+          remainingSeconds: Math.floor((date.getTime() - now.getTime()) / 1000)
+        });
+      }
     }
   }
-  return null;
-}
 
-function findFirstPrayer(schedule, nowParts, dayOffset = 0) {
-  if (!schedule) return null;
-  const prayers = [
-    ['subuh', 'Subuh'],
-    ['dzuhur', 'Dzuhur'],
-    ['ashar', 'Ashar'],
-    ['maghrib', 'Maghrib'],
-    ['isya', 'Isya']
-  ];
-
-  const nowSeconds = nowParts
-    ? toDaySeconds(nowParts.hour, nowParts.minute, nowParts.second)
-    : 0;
-
-  for (const [key, label] of prayers) {
-    const time = normalizePrayerTime(schedule[key]);
-    if (!time) continue;
-    const prayerSeconds = parseTimeToSeconds(time);
-
-    // Jika mengambil jadwal besok, sisa waktu harus:
-    // sisa detik hari ini + detik menuju waktu shalat besok.
-    const remainingSeconds = (dayOffset * 86400) - nowSeconds + prayerSeconds;
-
-    return { name: label, time, remainingSeconds };
-  }
-  return null;
-}
-
-function getJakartaDateTimeParts() {
-  const formatter = new Intl.DateTimeFormat('en-CA', {
-    timeZone: HOME_PRAYER_CONFIG.timezone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  });
-  const parts = Object.fromEntries(formatter.formatToParts(new Date()).map((part) => [part.type, part.value]));
-  return {
-    year: parts.year,
-    month: parts.month,
-    day: parts.day,
-    hour: Number(parts.hour || 0),
-    minute: Number(parts.minute || 0),
-    second: Number(parts.second || 0)
-  };
-}
-
-function getTomorrowParts(year, month, day) {
-  const base = new Date(`${year}-${month}-${day}T00:00:00`);
-  base.setDate(base.getDate() + 1);
-  return {
-    year: String(base.getFullYear()),
-    month: String(base.getMonth() + 1).padStart(2, '0'),
-    day: String(base.getDate()).padStart(2, '0')
-  };
+  return candidates.sort((a, b) => a.remainingSeconds - b.remainingSeconds)[0] || null;
 }
 
 function normalizePrayerTime(value) {
@@ -868,4 +936,134 @@ function formatCountdown(totalSeconds) {
   const minutes = Math.floor((value % 3600) / 60);
   const seconds = value % 60;
   return `${String(hours).padStart(2, '0')} : ${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}`;
+}
+
+async function hydrateHomePrayerLocationControls() {
+  if (!homePrayerProvinceSelect || !homePrayerCitySelect) return;
+
+  try {
+    const provinces = await fetchPrayerProvinces();
+    homePrayerProvinceSelect.innerHTML = provinces.map((province) => (
+      `<option value="${escapeAttr(province)}" ${province === state.prayerProvince ? 'selected' : ''}>${escapeHtml(province)}</option>`
+    )).join('');
+    await fillHomePrayerCities(state.prayerProvince);
+    setHomePrayerLocationStatus(`Wilayah aktif: ${state.prayerCity}, ${state.prayerProvince}`);
+  } catch (error) {
+    homePrayerProvinceSelect.innerHTML = `<option value="${escapeAttr(state.prayerProvince)}">${escapeHtml(state.prayerProvince)}</option>`;
+    homePrayerCitySelect.innerHTML = `<option value="${escapeAttr(state.prayerCity)}">${escapeHtml(state.prayerCity)}</option>`;
+    setHomePrayerLocationStatus('Daftar wilayah belum bisa dimuat. Wilayah tersimpan tetap digunakan.');
+  }
+}
+
+async function fillHomePrayerCities(province) {
+  if (!homePrayerCitySelect) return;
+  homePrayerCitySelect.innerHTML = '<option>Memuat kabupaten/kota...</option>';
+  const cities = await fetchPrayerCities(province);
+  const selectedCity = cities.includes(state.prayerCity) ? state.prayerCity : cities[0];
+  homePrayerCitySelect.innerHTML = cities.map((city) => (
+    `<option value="${escapeAttr(city)}" ${city === selectedCity ? 'selected' : ''}>${escapeHtml(city)}</option>`
+  )).join('');
+}
+
+function setHomePrayerLocationStatus(message) {
+  if (homePrayerLocationStatus) homePrayerLocationStatus.textContent = message;
+}
+
+function persistHomePrayerLocation() {
+  safeStorageSet(STORAGE_KEYS.prayerProvince, state.prayerProvince);
+  safeStorageSet(STORAGE_KEYS.prayerCity, state.prayerCity);
+}
+
+async function fetchPrayerProvinces() {
+  const cached = loadJson('almatsurat-prayer-provinces', null);
+  if (Array.isArray(cached) && cached.length) return cached;
+  const response = await fetch(`${EQURAN_BASE}/provinsi`);
+  if (!response.ok) throw new Error('Provinsi gagal dimuat.');
+  const json = await response.json();
+  if (json.code !== 200 || !Array.isArray(json.data)) throw new Error('Format provinsi tidak sesuai.');
+  safeStorageSet('almatsurat-prayer-provinces', JSON.stringify(json.data));
+  return json.data;
+}
+
+async function fetchPrayerCities(province) {
+  const cacheKey = `almatsurat-prayer-cities-${province}`;
+  const cached = loadJson(cacheKey, null);
+  if (Array.isArray(cached) && cached.length) return cached;
+  const response = await fetch(`${EQURAN_BASE}/kabkota`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ provinsi: province })
+  });
+  if (!response.ok) throw new Error('Kabupaten/kota gagal dimuat.');
+  const json = await response.json();
+  if (json.code !== 200 || !Array.isArray(json.data)) throw new Error('Format kabupaten/kota tidak sesuai.');
+  safeStorageSet(cacheKey, JSON.stringify(json.data));
+  return json.data;
+}
+
+async function detectRegionFromGps() {
+  if (!navigator.geolocation) throw new Error('Perangkat/browser belum mendukung GPS.');
+  const position = await new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject, {
+      enableHighAccuracy: true,
+      timeout: 12000,
+      maximumAge: 300000
+    });
+  });
+  const { latitude, longitude } = position.coords;
+  const reverseUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(latitude)}&lon=${encodeURIComponent(longitude)}&zoom=10&addressdetails=1&accept-language=id`;
+  const response = await fetch(reverseUrl);
+  if (!response.ok) throw new Error('Reverse geocoding GPS gagal. Silakan pilih manual.');
+  const json = await response.json();
+  const address = json.address || {};
+  const provinceRaw = address.state || address.region || address.province || '';
+  const cityRaw = address.city || address.county || address.municipality || address.city_district || address.town || address.village || '';
+  const provinces = await fetchPrayerProvinces();
+  const province = matchPrayerProvince(provinceRaw, provinces);
+  if (!province) throw new Error('Provinsi dari GPS belum cocok. Silakan pilih manual.');
+  const cities = await fetchPrayerCities(province);
+  const city = matchPrayerCity(cityRaw, cities);
+  if (!city) throw new Error('Kabupaten/kota dari GPS belum cocok. Silakan pilih manual.');
+  return { province, city };
+}
+
+function matchPrayerProvince(rawValue, provinces) {
+  const mapped = prayerProvinceAliasMap()[normalizePrayerLookupKey(rawValue)] || rawValue;
+  const wanted = normalizePrayerLookupKey(mapped);
+  return provinces.find((province) => normalizePrayerLookupKey(province) === wanted)
+    || provinces.find((province) => wanted.includes(normalizePrayerLookupKey(province)) || normalizePrayerLookupKey(province).includes(wanted));
+}
+
+function matchPrayerCity(rawValue, cities) {
+  const wanted = normalizePrayerLookupKey(rawValue).replace(/^(kabupaten|kab|kota)\s+/, '');
+  return cities.find((city) => normalizePrayerLookupKey(city).replace(/^(kabupaten|kab|kota)\s+/, '') === wanted)
+    || cities.find((city) => normalizePrayerLookupKey(city).includes(wanted) || wanted.includes(normalizePrayerLookupKey(city).replace(/^(kabupaten|kab|kota)\s+/, '')));
+}
+
+function normalizePrayerLookupKey(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/dki\s+jakarta.*/, 'dki jakarta')
+    .replace(/di\s+yogyakarta|daerah\s+istimewa\s+yogyakarta/, 'di yogyakarta')
+    .replace(/provinsi|province|regency|city|kota|kabupaten/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function prayerProvinceAliasMap() {
+  return {
+    'jakarta': 'DKI Jakarta',
+    'special capital region of jakarta': 'DKI Jakarta',
+    'yogyakarta': 'DI Yogyakarta',
+    'special region of yogyakarta': 'DI Yogyakarta'
+  };
+}
+
+function localYmd(value) {
+  const year = value.getFullYear();
+  const month = String(value.getMonth() + 1).padStart(2, '0');
+  const day = String(value.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }

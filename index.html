@@ -36,6 +36,7 @@
         <div class="home-prayer-next" id="homePrayerNext"><span class="home-prayer-name">Dzuhur</span><span class="home-prayer-separator"> | </span><span class="home-prayer-time">12:05</span></div>
         <div class="home-prayer-countdown-label" id="homePrayerCountdownLabel">Menuju Waktu Shalat</div>
         <div class="home-prayer-countdown" id="homePrayerCountdown">01 : 19 : 15</div>
+        <div class="home-prayer-location" id="homePrayerLocation" hidden>Memuat lokasi...</div>
       </div>
 
       <nav class="top-nav" aria-label="Navigasi utama">
@@ -68,7 +69,38 @@
       <div class="container">
         <div class="hero">
           <div class="hero-copy">
+            <button class="location-fab" id="homePrayerLocationBtn" type="button" aria-label="Atur lokasi jadwal shalat" aria-expanded="false" aria-controls="homePrayerSettingsPanel">⌖</button>
             <img class="hero-logo" src="assets/logo_doa.png" alt="Wazifah Sughro" loading="eager">
+            <div class="home-prayer-settings-modal" id="homePrayerSettingsModal" hidden>
+              <section class="home-prayer-settings-panel" id="homePrayerSettingsPanel" aria-label="Pengaturan lokasi jadwal shalat" aria-modal="true" role="dialog">
+                <div class="home-prayer-settings-head">
+                  <div>
+                    <strong>Lokasi Jadwal Shalat</strong>
+                    <p>Pilih wilayah manual atau gunakan GPS agar jadwal mengikuti lokasi Anda.</p>
+                  </div>
+                  <button class="icon-button home-prayer-settings-close" id="homePrayerSettingsCloseBtn" type="button" aria-label="Tutup pengaturan lokasi">×</button>
+                </div>
+                <div class="home-prayer-location-grid">
+                  <div class="field-group">
+                    <label for="homePrayerProvinceSelect">Provinsi</label>
+                    <select id="homePrayerProvinceSelect">
+                      <option>Memuat provinsi...</option>
+                    </select>
+                  </div>
+                  <div class="field-group">
+                    <label for="homePrayerCitySelect">Kabupaten/Kota</label>
+                    <select id="homePrayerCitySelect">
+                      <option>Memuat kabupaten/kota...</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="home-prayer-location-actions">
+                  <button class="btn btn-accent" id="homePrayerSaveLocationBtn" type="button">Simpan Wilayah</button>
+                  <button class="btn btn-ghost" id="homePrayerGpsBtn" type="button">Gunakan GPS</button>
+                </div>
+                <p class="home-prayer-location-status" id="homePrayerLocationStatus">Wilayah aktif: memuat...</p>
+              </section>
+            </div>
             <figure class="motivation-verse">
               <p class="motivation-arabic" dir="rtl" lang="ar">فَسُبْحَانَ اللَّهِ حِينَ تُمْسُونَ وَحِينَ تُصْبِحُونَ</p>
               <figcaption>“Maka bertasbihlah kepada Allah di waktu kamu berada di sore hari dan waktu kamu berada di waktu pagi hari” <span>(QS. Ar-Rum:17)</span>.</figcaption>
