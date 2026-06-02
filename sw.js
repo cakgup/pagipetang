@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pagipetang-v2';
+const CACHE_NAME = 'pagipetang-v3';
 
 const APP_ASSETS = [
   './',

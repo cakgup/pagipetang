@@ -713,6 +713,7 @@ function formatCategory(value) {
 
 function initHomePrayerWidget() {
   initHomePrayerLocationControls();
+  renderHomePrayerLoadingState('Memuat jadwal...');
   updateHomePrayerWidgetVisibility();
   refreshHomePrayerWidget();
   if (homePrayerState.countdownInterval) clearInterval(homePrayerState.countdownInterval);
@@ -802,7 +803,7 @@ function toggleHomePrayerSettings(forceOpen) {
 
 function updateHomePrayerWidgetVisibility() {
   if (!homePrayerWidget) return;
-  const shouldShow = state.currentView === 'home' && homePrayerWidget.classList.contains('is-ready');
+  const shouldShow = state.currentView === 'home';
   homePrayerWidget.hidden = !shouldShow;
 }
 
@@ -831,10 +832,26 @@ async function refreshHomePrayerWidget() {
   } catch (error) {
     console.error('Gagal memuat jadwal shalat home:', error);
     homePrayerWidget?.classList.remove('is-ready');
-    homePrayerWidget && (homePrayerWidget.hidden = true);
+    renderHomePrayerLoadingState('Jadwal belum tersedia');
   } finally {
     homePrayerState.refreshPending = false;
     updateHomePrayerWidgetVisibility();
+  }
+}
+
+function renderHomePrayerLoadingState(countdownText = 'Memuat jadwal...') {
+  if (homePrayerNext) {
+    homePrayerNext.innerHTML = '<span class="home-prayer-name">Jadwal Shalat</span><span class="home-prayer-separator"> | </span><span class="home-prayer-time">--:--</span>';
+  }
+  if (homePrayerCountdownLabel) {
+    homePrayerCountdownLabel.textContent = `${state.prayerCity}, ${state.prayerProvince}`;
+  }
+  if (homePrayerCountdown) {
+    homePrayerCountdown.textContent = countdownText;
+  }
+  if (homePrayerLocation) {
+    homePrayerLocation.textContent = `${state.prayerCity}, ${state.prayerProvince}`;
+    homePrayerLocation.hidden = true;
   }
 }
 
