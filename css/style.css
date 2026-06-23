@@ -969,6 +969,12 @@ html[data-theme="dark"] .prose-card h2 {
     flex-direction: column;
   }
 
+  .reader-head-side {
+    width: 100%;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
   .footer-inner {
     flex-direction: column;
   }
@@ -1263,6 +1269,43 @@ html[data-theme="dark"] .summary-pill strong { color: var(--accent); }
 .reader-head::after { content: ''; position: absolute; right: -42px; top: -42px; width: 150px; height: 150px; border-radius: 50%; background: color-mix(in srgb, var(--accent) 22%, transparent); pointer-events: none; }
 .reader-head > * { position: relative; z-index: 1; }
 .reader-actions { margin-top: 12px; }
+.reader-head-side {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-left: auto;
+}
+.reader-audio-button {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  aspect-ratio: 1 / 1;
+  border: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.45), transparent 30%),
+    color-mix(in srgb, var(--accent) 72%, white 18%);
+  color: var(--primary);
+  box-shadow: 0 16px 34px rgba(245, 179, 0, 0.18);
+}
+.reader-audio-button[hidden] { display: none; }
+.reader-audio-button.is-playing {
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.35), transparent 30%),
+    color-mix(in srgb, var(--primary) 88%, black 2%);
+  color: var(--accent);
+}
+.reader-audio-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+  transform: translateX(1px);
+}
+.reader-audio-button.is-playing .reader-audio-icon {
+  transform: none;
+}
 .route-chip { display: inline-flex; align-items: center; min-height: 34px; border-radius: 999px; padding: 6px 12px; background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); font-weight: 850; font-size: 0.86rem; }
 .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .category-badge { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 999px; padding: 4px 9px; color: var(--muted); background: var(--surface-2); font-size: 0.8rem; font-weight: 800; }
@@ -1400,6 +1443,12 @@ html[data-theme="dark"] .summary-pill strong { color: var(--accent); }
 
   .reader-head {
     padding: 18px;
+  }
+
+  .reader-audio-button {
+    width: 29px;
+    height: 29px;
+    min-width: 29px;
   }
 
   .card-tools .counter-actions {

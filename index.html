@@ -149,7 +149,12 @@
               <span class="progress-pill" id="progressText">0 / 0 selesai</span>
             </div>
           </div>
-          <span class="route-chip">Arab + arti tersedia</span>
+          <div class="reader-head-side">
+            <button class="reader-audio-button" id="readerAudioToggle" type="button" hidden aria-label="Putar audio Wazifah Sughro sore" aria-pressed="false">
+              <span class="reader-audio-icon" aria-hidden="true">►</span>
+            </button>
+            <span class="route-chip">Arab + arti tersedia</span>
+          </div>
         </div>
 
         <div class="settings-panel" aria-label="Pengaturan bacaan">
@@ -188,6 +193,7 @@
   </footer>
 
   <audio id="backsoundAudio" src="assets/doa.mp3" preload="none" loop></audio>
+  <audio id="readerAudio" preload="none"></audio>
   <noscript><div class="noscript">Aplikasi ini membutuhkan JavaScript untuk menampilkan data bacaan.</div></noscript>
   <script>
     if ('serviceWorker' in navigator) {

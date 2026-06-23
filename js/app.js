@@ -24,7 +24,11 @@ const READER_ROUTES = {
   wazifah: {
     title: 'Wazifah Sughro',
     eyebrow: "Al-Ma'tsurat Hasan Al-Banna",
-    description: 'Rangkaian bacaan yang ringkas untuk pagi dan petang.'
+    description: 'Rangkaian bacaan yang ringkas untuk pagi dan petang.',
+    audio: {
+      src: 'assets/sugra_sore.m4a',
+      label: 'Putar audio Wazifah Sughro sore'
+    }
   },
   'doa-sholat': {
     title: 'Dzikir Setelah Shalat',
@@ -71,6 +75,9 @@ const displayModeSelect = document.getElementById('displayModeSelect');
 const themeToggle = document.getElementById('themeToggle');
 const soundToggleBtn = document.getElementById('soundToggleBtn');
 const backsoundAudio = document.getElementById('backsoundAudio');
+const readerAudioToggle = document.getElementById('readerAudioToggle');
+const readerAudioIcon = readerAudioToggle?.querySelector('.reader-audio-icon');
+const readerAudio = document.getElementById('readerAudio');
 const resetCountersBtn = document.getElementById('resetCountersBtn');
 const printBtn = document.getElementById('printBtn');
 const progressText = document.getElementById('progressText');
@@ -114,6 +121,8 @@ fontIncreaseBtn?.addEventListener('click', () => adjustFontSize(1));
 displayModeSelect?.addEventListener('change', () => setDisplayMode(displayModeSelect.value));
 themeToggle?.addEventListener('click', toggleTheme);
 soundToggleBtn?.addEventListener('click', toggleBacksound);
+readerAudioToggle?.addEventListener('click', toggleReaderAudio);
+readerAudio?.addEventListener('ended', updateReaderAudioButton);
 resetCountersBtn?.addEventListener('click', resetCountersForCurrentType);
 printBtn?.addEventListener('click', () => window.print());
 
@@ -182,6 +191,7 @@ async function showReader(type) {
     readerDescription.textContent = routeConfig.description || '';
     readerDescription.hidden = !routeConfig.description;
   }
+  syncReaderAudio(routeConfig);
 
   try {
     const data = loadPrayerData(type);
@@ -635,6 +645,65 @@ async function toggleBacksound() {
     return;
   }
 
+  updateBacksoundButton();
+}
+
+function syncReaderAudio(routeConfig) {
+  if (!readerAudioToggle || !readerAudio) return;
+
+  const audioConfig = routeConfig?.audio;
+  const shouldShow = Boolean(audioConfig?.src);
+
+  if (!shouldShow) {
+    readerAudio.pause();
+    readerAudio.removeAttribute('src');
+    readerAudio.load();
+    readerAudioToggle.hidden = true;
+    updateReaderAudioButton();
+    return;
+  }
+
+  if (!readerAudio.getAttribute('src') || readerAudio.getAttribute('src') !== audioConfig.src) {
+    readerAudio.pause();
+    readerAudio.src = audioConfig.src;
+    readerAudio.load();
+  }
+
+  readerAudioToggle.hidden = false;
+  readerAudioToggle.setAttribute('aria-label', audioConfig.label || 'Putar audio bacaan');
+  updateReaderAudioButton();
+}
+
+async function toggleReaderAudio() {
+  if (!readerAudio || !readerAudioToggle || readerAudioToggle.hidden) return;
+
+  try {
+    if (readerAudio.paused) {
+      backsoundAudio?.pause();
+      updateBacksoundButton();
+      await readerAudio.play();
+    } else {
+      readerAudio.pause();
+      readerAudio.currentTime = 0;
+    }
+  } catch (error) {
+    return;
+  }
+
+  updateReaderAudioButton();
+}
+
+function updateReaderAudioButton() {
+  if (!readerAudioToggle || !readerAudioIcon || !readerAudio) return;
+  const isPlaying = !readerAudio.paused;
+  readerAudioToggle.classList.toggle('is-playing', isPlaying);
+  readerAudioToggle.setAttribute('aria-pressed', String(isPlaying));
+  readerAudioToggle.setAttribute('aria-label', isPlaying ? 'Hentikan audio Wazifah Sughro sore' : 'Putar audio Wazifah Sughro sore');
+  readerAudioIcon.textContent = isPlaying ? '❚❚' : '►';
+}
+
+function updateBacksoundButton() {
+  if (!backsoundAudio || !soundToggleBtn) return;
   const isPlaying = !backsoundAudio.paused;
   soundToggleBtn.classList.toggle('is-playing', isPlaying);
   soundToggleBtn.setAttribute('aria-pressed', String(isPlaying));
