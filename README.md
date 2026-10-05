@@ -176,6 +176,16 @@ const WAZIFAH_SUGRO_DATA = [...]
 const WAZIFAH_KUBRO_RAW = ...
 ```
 
+Teks Arab 79 ayat dalam 20 bagian Al-Qur’an pada Wazifah Kubro telah
+dicocokkan dengan [Qur’an Kemenag](https://quran.kemenag.go.id/) pada
+5 Oktober 2026. Rujukan menggunakan field `arabic` dari API yang dipakai
+situs tersebut (`https://web-api.qurankemenag.net/quran-ayah`), dengan nomor
+surah dan ayat sesuai setiap item. Harakat, tanda mad, dan tanda waqaf
+dipertahankan dari sumber, termasuk pada basmalah. Jangan menghapus atau
+menormalisasi tanda-tanda tersebut saat memperbarui teks ayat. Metadata
+rujukan tersedia pada `WAZIFAH_KUBRO_RAW.quran_source`; terjemahan tetap
+mengikuti koleksi sebelumnya.
+
 Saat mengubah isi, jaga konsistensi field seperti:
 
 - `id`
