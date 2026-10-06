@@ -180,9 +180,12 @@ Teks Arab 79 ayat dalam 20 bagian Al-Qur’an pada Wazifah Kubro telah
 dicocokkan dengan [Qur’an Kemenag](https://quran.kemenag.go.id/) pada
 5 Oktober 2026. Rujukan menggunakan field `arabic` dari API yang dipakai
 situs tersebut (`https://web-api.qurankemenag.net/quran-ayah`), dengan nomor
-surah dan ayat sesuai setiap item. Harakat, tanda mad, dan tanda waqaf
-dipertahankan dari sumber, termasuk pada basmalah. Jangan menghapus atau
-menormalisasi tanda-tanda tersebut saat memperbarui teks ayat. Metadata
+surah dan ayat sesuai setiap item. Huruf, harakat, dan tanda mad
+dipertahankan dari sumber, termasuk pada basmalah. Pada 6 Oktober 2026,
+tanda waqaf dan ornamen khusus dihapus dari seluruh koleksi sesuai
+permintaan pengguna untuk menghindari tampilan kotak karakter.
+`cleanArabicDisplayText` juga membersihkan tanda tersebut saat rendering
+bacaan baru tanpa menghapus huruf, hamzah, harakat, atau tanda mad. Metadata
 rujukan tersedia pada `WAZIFAH_KUBRO_RAW.quran_source`; terjemahan tetap
 mengikuti koleksi sebelumnya.
 
